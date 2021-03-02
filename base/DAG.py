@@ -28,6 +28,15 @@ class DAG(nx.DiGraph):
         :param weight: default=0
         :return:
         """
-        super(self, DAG).add_edge(u_of_edge, v_of_edge, weight=weight)
+        super(DAG, self).add_edge(u_of_edge, v_of_edge, weight=weight)
 
-
+    def add_edges_from(self, ebunch_to_add):
+        """
+        批量增加edges
+        :param ebunch_to_add: (a,b,d) 得到a->b,d为权重
+        :return:
+        """
+        for e in ebunch_to_add:
+            if len(e) == 2:
+                e = (e[0],e[1],0)
+        super(DAG, self).add_edges_from(ebunch_to_add)
