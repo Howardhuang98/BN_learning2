@@ -30,13 +30,9 @@ class DAG(nx.DiGraph):
         """
         super(DAG, self).add_edge(u_of_edge, v_of_edge, weight=weight)
 
-    def add_edges_from(self, ebunch_to_add):
+    def add_edges_from(self, ebunch_to_add, weight=0):
         """
-        批量增加edges
-        :param ebunch_to_add: (a,b,d) 得到a->b,d为权重
-        :return:
+        批量增加edges,默认weight=0
+        :param ebunch_to_add: list or other hashable item, for example:[('a','b'),('b','c')]
         """
-        for e in ebunch_to_add:
-            if len(e) == 2:
-                e = (e[0],e[1],0)
-        super(DAG, self).add_edges_from(ebunch_to_add)
+        super(DAG, self).add_edges_from(ebunch_to_add, weight=weight)
