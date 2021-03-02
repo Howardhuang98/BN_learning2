@@ -19,3 +19,5 @@ class DAG(nx.DiGraph):
             out_str += "\nEdges indicating the path taken for a loop: "
             out_str += "".join([f"({u},{v}) " for (u, v) in cycles])
             raise ValueError(out_str)
+
+    def add_edge(self, u_of_edge, v_of_edge, weight= 0):
