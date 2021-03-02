@@ -8,7 +8,7 @@ class DAG(nx.DiGraph):
     """
 
     def __init__(self, incoming_graph_data=None, **attr):
-        super(DAG, self).__init__(incoming_graph_data,**attr)
+        super(DAG, self).__init__(incoming_graph_data, **attr)
         cycles = []
         try:
             cycles = list(nx.find_cycle(self))
@@ -20,4 +20,14 @@ class DAG(nx.DiGraph):
             out_str += "".join([f"({u},{v}) " for (u, v) in cycles])
             raise ValueError(out_str)
 
-    def add_edge(self, u_of_edge, v_of_edge, weight= 0):
+    def add_edge(self, u_of_edge, v_of_edge, weight=0):
+        """
+        增加 u->v 的边，默认权重为0
+        :param u_of_edge:
+        :param v_of_edge:
+        :param weight: default=0
+        :return:
+        """
+        super(self, DAG).add_edge(u_of_edge, v_of_edge, weight=weight)
+
+
