@@ -1,6 +1,8 @@
 import base
 import numpy as np
 import pandas as pd
+from functools import lru_cache
+from math import lgamma, log
 
 
 class ScoreFunction():
@@ -36,7 +38,7 @@ class ScoreFunction():
         :param parents:
         :return:
         """
-
+        parents = list(parents)
         if not parents:
             state_count_data = self.data.loc[:, variable].value_counts()
             state_counts = (
@@ -65,3 +67,38 @@ class ScoreFunction():
                 index=row_index, columns=column_index
             ).fillna(0)
         return state_counts
+
+
+class BicScore(ScoreFunction):
+    """
+    BIC评分，给定数据与 variable 与 parents 即可计算出 local score
+    """
+
+    def __init__(self, data: pd.DataFrame):
+        super(BicScore, self).__init__(data=data)
+
+    def local_score(self, variable, parents):
+        var_states = self.state_names[variable]
+        var_cardinality = len(var_states)
+        state_counts = self.state_counts(variable, parents)
+        sample_size = len(self.data)
+        num_parents_states = float(state_counts.shape[1])
+
+        counts = np.asarray(state_counts)
+        log_likelihoods = np.zeros_like(counts, dtype=np.float_)
+
+        # Compute the log-counts
+        np.log(counts, out=log_likelihoods, where=counts > 0)
+
+        # Compute the log-conditional sample size
+        log_conditionals = np.sum(counts, axis=0, dtype=np.float_)
+        np.log(log_conditionals, out=log_conditionals, where=log_conditionals > 0)
+
+        # Compute the log-likelihoods
+        log_likelihoods -= log_conditionals
+        log_likelihoods *= counts
+
+        score = np.sum(log_likelihoods)
+        score -= 0.5 * log(sample_size) * num_parents_states * (var_cardinality - 1)
+
+        return score
