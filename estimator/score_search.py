@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 
-class Score_function():
+class ScoreFunction():
     """
     评分函数类
     评分函数类需要data，以及一些data的计算能力，比如state count，对data的检查能力
@@ -14,15 +14,16 @@ class Score_function():
         self.variables = list(data.columns.values)
         self.state_names = dict()
         for var in self.variables:
-            self.state_names[var]=self.collect_state_names(var)
+            self.state_names[var] = self.collect_state_names(var)
 
-    def collect_state_names(self,variable):
+    def collect_state_names(self, variable):
         """收集数据中某个变量variable的状态名
         :param variable:
         """
-        states = sorted(list(self.data.loc[:,variable].unique()))
+        states = sorted(list(self.data.loc[:, variable].unique()))
         return states
-    def state_counts(self,variable,parents=[]):
+
+    def state_counts(self, variable, parents=[]):
         """
         计算该变量的状态数，得到一个交叉表。例如
         variable = 'C', parents=['A', 'B']
@@ -37,7 +38,7 @@ class Score_function():
         """
 
         if not parents:
-            state_count_data = self.data.loc[:,variable].value_counts()
+            state_count_data = self.data.loc[:, variable].value_counts()
             state_counts = (
                 state_count_data.reindex(self.state_names[variable])
                     .fillna(0)
